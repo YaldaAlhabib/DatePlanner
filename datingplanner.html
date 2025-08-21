@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<title>Pookie Picker — Date Plan (Baby Pink • Sofia • BGN)</title>
+<style>
+  :root{
+    --bg:#fff0f5;        /* light blush */
+    --card:#ffe4ef;      /* pale pink cards */
+    --ink:#3f2a2a;       /* deep cocoa text */
+    --muted:#a87482;     /* muted rosy text */
+    --accent:#ff85a2;    /* baby pink */
+    --accent2:#ffb3c6;   /* soft highlight pink */
+    --danger:#ff4d6d;    /* warning red-pink */
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color:var(--ink);
+    background: 
+      linear-gradient( to bottom, rgba(255,240,245,.85), rgba(255,240,245,.92) ),
+      url('https://i.pinimg.com/736x/02/8a/27/028a27b3c6fd3b9a0299ea27c95b8a52.jpg') center/cover fixed no-repeat;
+    padding: max(16px, env(safe-area-inset-top)) 16px 24px;
+  }
+  .wrap{max-width:1000px; margin:auto}
+  header{display:flex; align-items:center; gap:14px; margin-bottom:18px}
+  .logo{width:44px; height:44px; border-radius:14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:0 8px 20px rgba(255,133,162,.35)}
+  h1{font-size:1.5rem; margin:0}
+  p.sub{color:var(--muted); margin:.25rem 0 0}
+  .grid{display:grid; grid-template-columns: repeat(12, 1fr); gap:14px}
+  .card{grid-column: span 12; background:rgba(255,228,239,.95); border:1px solid #f8c6d5; border-radius:var(--radius); padding:16px; box-shadow:0 8px 28px rgba(0,0,0,.10)}
+  label{font-size:.9rem; color:var(--muted); display:block; margin-bottom:6px}
+  select, input[type="text"]{width:100%; background:#fff; border:1px solid #f4b6c4; color:var(--ink); border-radius:12px; padding:12px; outline:none; transition:.15s}
+  select:focus, input:focus{border-color:var(--accent)}
+  .pillset{display:flex; flex-wrap:wrap; gap:8px}
+  .pill{padding:10px 14px; border:1px solid #f4b6c4; border-radius:999px; cursor:pointer; user-select:none; color:var(--muted); background:#fff; transition:.15s}
+  .pill.active{border-color:var(--accent); color:var(--ink); background:#ffe4ef; box-shadow:0 0 0 4px rgba(255,179,198,.25) inset}
+  .choiceRow{display:flex; gap:10px; flex-wrap:wrap}
+  .chip{flex:1 1 130px; background:#fff; border:1px solid #f4b6c4; border-radius:14px; padding:10px; text-align:center; cursor:pointer; color:var(--muted)}
+  .chip.selected{border-color:var(--accent); background:#ffe4ef; color:var(--ink)}
+  .divider{height:1px; background:#f4b6c4; margin:12px 0}
+  .actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+  button{background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-weight:800; padding:12px 16px; border:none; border-radius:12px; cursor:pointer; box-shadow:0 10px 20px rgba(255,133,162,.35)}
+  button.ghost{background:#fff; color:var(--ink); border:1px solid #f4b6c4; font-weight:700}
+  .out{white-space:pre-wrap; background:#fff; border:1px solid #f4b6c4; border-radius:12px; padding:14px; min-height:140px}
+  .two{display:grid; grid-template-columns:1fr; gap:14px}
+  @media (min-width:860px){ .two{grid-template-columns:1fr 1fr} .card.half{grid-column: span 6} }
+  small.hint{color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">💕</div>
+      <div>
+        <h1>Pookie Picker — Date Plan</h1>
+        <p class="sub">Baby pink • Sofia • Prices in BGN</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <div class="two">
+          <div>
+            <label>Budget (per person, BGN)</label>
+            <div class="pillset single" id="budget">
+              <div class="pill" data-val="low">low</div>
+              <div class="pill active" data-val="mid">mid</div>
+              <div class="pill" data-val="high">high</div>
+            </div>
+          </div>
+          <div>
+            <label>Time</label>
+            <div class="pillset single" id="time">
+              <div class="pill" data-val="morning">Morning</div>
+              <div class="pill" data-val="afternoon">Afternoon</div>
+              <div class="pill active" data-val="evening">Evening</div>
+              <div class="pill" data-val="late">Late night</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two" style="margin-top:6px">
+          <div>
+            <label>Vibe</label>
+            <div class="pillset single" id="vibe">
+              <div class="pill active" data-val="romantic">romantic</div>
+              <div class="pill" data-val="playful">playful</div>
+              <div class="pill" data-val="cozy">cozy</div>
+              <div class="pill" data-val="adventurous">adventurous</div>
+              <div class="pill" data-val="classy">classy</div>
+            </div>
+          </div>
+          <div>
+            <label>Indoor / Outdoor</label>
+            <div class="pillset single" id="inout">
+              <div class="pill active" data-val="either">either</div>
+              <div class="pill" data-val="indoor">indoor</div>
+              <div class="pill" data-val="outdoor">outdoor</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label>Activities (pick a few)</label>
+          <div class="choiceRow" id="acts"></div>
+          <small class="hint">Includes cozy home options 💗</small>
+        </div>
+
+        <div class="divider"></div>
+        <div class="actions">
+          <button id="seePlan">See plan</button>
+          <button class="ghost" id="reshuffle">Reshuffle ideas</button>
+          <button class="ghost" id="copyPlan">Copy plan</button>
+          <button class="ghost" id="share">Share / Send</button>
+        </div>
+      </div>
+
+      <div class="card half">
+        <label>Itinerary</label>
+        <div id="plan" class="out">Pick options and tap “See plan”.</div>
+      </div>
+      <div class="card half">
+        <label>Message draft</label>
+        <div id="msg" class="out"></div>
+        <small class="hint">Offline • No names • Optimized for phones</small>
+      </div>
+    </div>
+    </div>
+
+  <div class="wrap" style="margin-top:14px">
+    <div class="card">
+      <label>Saved plan link</label>
+      <div class="two">
+        <div>
+          <div id="savedLink" class="out">Not saved yet.</div>
+        </div>
+        <div>
+          <label>Save & share</label>
+          <div class="actions">
+            <button id="save">Save & Get Link</button>
+            <button class="ghost" id="copySaved">Copy Link</button>
+          </div>
+          <small class="hint">This uses an API at <code>/api/plan</code>. Host the HTML and API together (or set up a reverse proxy) for best results.</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Surface any JS errors so we can see what's wrong on PC
+  window.addEventListener('error', function(e){
+    try{
+      const b=document.createElement('div');
+      b.textContent='Error: '+e.message; b.style.position='fixed'; b.style.bottom='18px'; b.style.left='18px'; b.style.background='linear-gradient(135deg,#ff4d6d,#ffb3b3)'; b.style.color='#fff'; b.style.padding='10px 14px'; b.style.borderRadius='12px'; b.style.fontWeight='800'; b.style.boxShadow='0 10px 30px rgba(0,0,0,.35)';
+      document.body.appendChild(b); setTimeout(()=>b.remove(), 5000);
+    }catch(_){ alert('JS Error: '+e.message); }
+  });
+
+  // helpers
+  const $ = s => document.querySelector(s); 
+  const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
+  function rand(a){return a[Math.floor(Math.random()*a.length)]}
+
+  // API base (same origin by default)
+  const API_BASE = '';
+
+  // Build activities including cozy home vibes
+  const actsList = [
+    ["dinner","dinner out"],["dessert","dessert"],["walk","walk"],["museum","museum"],["cinema","cinema"],
+    ["boardgames","board games"],["live","live music"],["sunset","sunset spot"],["picnic","picnic"],
+    ["cafe","café"],["escape","escape room"],
+    ["home_hang","home hangout"],["movie_night","cozy movie night"],["cook","cook together"],["bake","bake & tea"],
+    ["spa_at_home","at-home spa"],["karaoke","karaoke at home"]
+  ];
+
+  const actsWrap = $('#acts');
+  actsList.forEach(([val,label])=>{
+    const chip = document.createElement('div'); 
+    chip.className='chip'; 
+    chip.dataset.val=val; 
+    chip.textContent=label; 
+    actsWrap.appendChild(chip);
+  });
+  actsWrap.addEventListener('click', e=>{
+    const c=e.target.closest('.chip'); 
+    if(!c) return; 
+    c.classList.toggle('selected'); 
+  });
+
+  // pill behavior
+  $$('.pillset').forEach(set=>{
+    set.addEventListener('click', e=>{
+      const p = e.target.closest('.pill'); 
+      if(!p) return;
+      if(set.classList.contains('single')){
+        $$(".pill", set).forEach(x=>x.classList.remove('active')); 
+        p.classList.add('active');
+      } else {
+        p.classList.toggle('active');
+      }
+    });
+  });
+
+  // Idea pools tailored to Sofia + home options
+  const ideas = {
+    dinner:{
+      low:["banichka + ayran on Vitoshka","kebapche & shopska at a mehana","street-food market around Largo"],
+      mid:["neighborhood trattoria near Vitoshka","modern Bulgarian bistro in Center","ramen spot around Slaveykov"],
+      high:["rooftop with city views","wine-pairing dinner in Lozenets","chef’s tasting menu near Parliament"]
+    },
+    dessert:{
+      low:["ice-cream stroll on Vitoshka","trileçe from a pastry shop"],
+      mid:["artisan gelato near City Garden","cheesecake café by NDK"],
+      high:["dessert bar at a boutique hotel","patisserie flight in Center"]
+    },
+    walk:["Borisova Gradina loop","Evening Vitoshka stroll","City Garden benches by the theatre","Loven Park chill"],
+    museum:["National Art Gallery","Kvadrat 500","Regional History Museum"],
+    cinema:["NDK cinema","indie screening at Lumière","open-air (seasonal)"],
+    boardgames:["board-game café near Serdika","at-home card night"],
+    live:["small jazz club near Sofia University","acoustic set in a café"],
+    sunset:["Knyazhevo viewpoint to Vitosha","rooftop terrace near Center"],
+    picnic:["South Park picnic","Borisova picnic with snacks"],
+    cafe:["cute café by Doctor’s Garden","matcha & chat around Oborishte"],
+    escape:["escape room (60 min) around Center","VR mini-quest"],
+    // Homey ideas
+    home_hang:["switch phones off + playlists","Polaroid mini-photoshoot at home"],
+    movie_night:["cozy movie night: blankets + one classic + one new","projector on the wall + popcorn"],
+    cook:["cook pasta together + garlic bread","dumpling night + dipping sauces"],
+    bake:["bake cookies + tea ceremony","brownies + vanilla ice-cream"],
+    spa_at_home:["face masks + foot soak + candles","DIY massage swap + lavender oil"],
+    karaoke:["YouTube karaoke + score the winner","duet challenge playlist"]
+  };
+
+  const opener=["ok hear me out 👉","proposal for us:","quick mission 😎","date blueprint 💌","operation pookie:" ];
+  const closers=["say yes? ✨","deal? 🫶","you in? 💫","shall we? 💗","wanna? 🥺"];  
+
+  function getSel(){
+    const budget=$('#budget .pill.active')?.dataset.val||'mid';
+    const time=$('#time .pill.active')?.dataset.val||'evening';
+    const vibe=$('#vibe .pill.active')?.dataset.val||'romantic';
+    const inout=$('#inout .pill.active')?.dataset.val||'either';
+    const acts=$$('#acts .chip.selected').map(c=>c.dataset.val);
+    return {budget,time,vibe,inout,acts};
+  }
+
+  function pickActivities(selected){
+    let acts=[...selected]; 
+    if(acts.length===0) acts=["dinner","walk","dessert"];
+    const chosen=[];
+    if(acts.includes('dinner')) chosen.push('dinner');
+    while(chosen.length<Math.min(3,acts.length)){
+      const pick=acts[Math.floor(Math.random()*acts.length)];
+      if(!chosen.includes(pick)) chosen.push(pick);
+    }
+    if(chosen.includes('dinner')&&!chosen.includes('dessert')&&Math.random()<0.6) chosen.push('dessert');
+    return chosen.slice(0,4);
+  }
+
+  function priceEstimateBGN(budget,chosen){
+    const base={low:12, mid:30, high:65}; 
+    let total=0;
+    chosen.forEach(a=>{
+      if(a==='dinner') total+=base[budget];
+      else if(a==='dessert'||a==='cafe') total+=Math.round(base[budget]*0.45);
+      else if(['live','escape','museum','cinema'].includes(a)) total+=Math.round(base[budget]*0.6);
+      else if(['home_hang','movie_night','cook','bake','spa_at_home','karaoke'].includes(a)) total+=5;
+    });
+    return total; // BGN
+  }
+
+  function makePlan(sel){
+    const chosen=pickActivities(sel.acts);
+    const lines=[]; 
+    const segments=[];
+    chosen.forEach(a=>{
+      if(Array.isArray(ideas[a])) segments.push('• '+rand(ideas[a]));
+      else if(ideas[a][sel.budget]) segments.push('• '+rand(ideas[a][sel.budget]));
+      else segments.push('• '+rand(ideas[a]||[a]));
+    });
+    const timeIntro={morning:'Start ~10:00',afternoon:'Start ~15:00',evening:'Start ~19:00',late:'Start ~21:30'}[sel.time];
+    lines.push(`Sofia plan · Vibe: ${sel.vibe} · Budget: ${sel.budget} · ${timeIntro}`);
+    if(sel.inout!=="either") lines.push(`Preference: ${sel.inout}`);
+    lines.push(''); 
+    lines.push(...segments);
+    const est=priceEstimateBGN(sel.budget,chosen);
+    lines.push(''); 
+    lines.push(`Estimated spend per person: ≈ ${est} BGN (very approx)`);
+    if(sel.vibe==='playful') lines.push('Bonus: loser buys dessert 🍰');
+    if(sel.vibe==='romantic') lines.push('Add-on: tiny love note on the napkin 💌');
+    if(sel.vibe==='adventurous') lines.push('Wildcard: flip a coin at each fork 🪙');
+    if(sel.vibe==='cozy') lines.push('Comfort add-on: blanket + playlist 🧸');
+    if(sel.vibe==='classy') lines.push('Dress code: a lil extra ✨');
+    return { text: lines.join('\n'), chosen };  /* ✅ fixed newline */
+  }
+
+  function cuteMsg(sel,chosen){
+    const pretty = {
+      dinner:'dinner out', dessert:'dessert', walk:'a walk', museum:'a museum stop', cinema:'a movie', boardgames:'board games', live:'live music', sunset:'a sunset moment', picnic:'a picnic', cafe:'a café date', escape:'an escape room',
+      home_hang:'a home hang', movie_night:'a cozy movie night', cook:'cooking together', bake:'baking + tea', spa_at_home:'an at-home spa', karaoke:'karaoke at home'
+    };
+    const actsPretty = chosen.map(a=>pretty[a]||a);
+    const timeWord = {morning:'tomorrow morning',afternoon:'this afternoon',evening:'tonight',late:'late tonight'}[sel.time]||'soon';
+    return `${rand(opener)}
+thinking ${actsPretty.slice(0,3).join(' → ')}${actsPretty.length>3?' → +':''}${actsPretty.length>3?' surprise':''} around Sofia. ${sel.vibe} vibes. ${timeWord}?
+${rand(closers)}`;
+  }
+
+  function render(){
+    const sel=getSel(); 
+    const {text,chosen}=makePlan(sel);
+    $('#plan').textContent=text; 
+    $('#msg').textContent=cuteMsg(sel,chosen);
+    localStorage.setItem('pookie-sel', JSON.stringify(sel));
+  }
+
+  // actions
+  $('#seePlan').addEventListener('click', render);
+  $('#reshuffle').addEventListener('click', render);
+  $('#copyPlan').addEventListener('click', async ()=>{
+    const txt=`DATE PLAN (Sofia)
+
+${$('#plan').textContent}
+
+—
+Message to send:
+${$('#msg').textContent}`;
+    try{ 
+      await navigator.clipboard.writeText(txt); 
+      toast('Copied plan ✨'); 
+    } catch(e){ 
+      toast('Couldn\'t auto-copy', true); 
+    }
+  });
+  $('#share').addEventListener('click', async ()=>{
+    const title='Date Plan 💘'; 
+    const text=`${$('#msg').textContent}
+
+---
+${$('#plan').textContent}`;
+    if (navigator.share){
+      try{ await navigator.share({title,text}); } 
+      catch(e){ toast('Share canceled'); } 
+    } else { 
+      try{ await navigator.clipboard.writeText(text); toast('Copied instead ✨'); } 
+      catch(e){ toast('No share access', true); } 
+    }
+  });
+
+  // SAVE (live mode)
+  $('#save').addEventListener('click', async ()=>{
+    const sel=getSel(); 
+    const {text,chosen}=makePlan(sel);
+    try{
+      const res = await fetch(`${API_BASE}/api/plan`,{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ city:'Sofia', currency:'BGN', selections:sel, itinerary:text, message:cuteMsg(sel,chosen) })
+      });
+      if(!res.ok) throw new Error('Save failed');
+      const data = await res.json();
+      const link = data.url || (location.origin + '/plan/' + data.id);
+      $('#savedLink').textContent = link; 
+      toast('Saved! Link ready ✨');
+    }catch(err){ 
+      toast('Could not reach API. Host HTML with the API.', true); 
+    }
+  });
+
+  $('#copySaved').addEventListener('click', async ()=>{
+    try{ 
+      await navigator.clipboard.writeText($('#savedLink').textContent.trim()); 
+      toast('Link copied ✨'); 
+    } catch(e){ 
+      toast('Nothing to copy', true); 
+    }
+  });
+
+  function toast(msg, warn=false){
+    const b=document.createElement('div'); 
+    b.textContent=msg; 
+    b.style.position='fixed'; 
+    b.style.bottom='18px'; 
+    b.style.right='18px'; 
+    b.style.background= warn? 'linear-gradient(135deg,var(--danger),#ffb3b3)': 'linear-gradient(135deg,var(--accent),var(--accent2))'; 
+    b.style.color='#fff'; 
+    b.style.padding='10px 14px'; 
+    b.style.borderRadius='12px'; 
+    b.style.fontWeight='800'; 
+    b.style.boxShadow='0 10px 30px rgba(0,0,0,.35)'; 
+    document.body.appendChild(b); 
+    setTimeout(()=>b.remove(), 2200);
+  }
+
+  // hydrate from local storage
+  (function hydrate(){
+    const saved=localStorage.getItem('pookie-sel'); 
+    if(!saved) return; 
+    const sel=JSON.parse(saved);
+    function selectPill(id,val){ 
+      const set=$(id); 
+      if(!set) return; 
+      $$(".pill",set).forEach(p=>{p.classList.toggle('active', p.dataset.val===val)}); 
+    }
+    if(sel.budget) selectPill('#budget',sel.budget);
+    if(sel.time) selectPill('#time',sel.time);
+    if(sel.vibe) selectPill('#vibe',sel.vibe);
+    if(sel.inout) selectPill('#inout',sel.inout);
+    if(sel.acts && sel.acts.length) sel.acts.forEach(a=>{ 
+      const chip=$(`#acts .chip[data-val="${a}"]`); 
+      if(chip) chip.classList.add('selected'); 
+    });
+  })();
+
+  // first render
+  render();
+</script>
+</body>
+</html>
