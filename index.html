@@ -18,30 +18,6 @@
     --radius:16px;
   }
   *{box-sizing:border-box}
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-  // 🔐 paste your own config from Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyBR5oZsBICjKNK190cLPZqUVSbytQuZdcQ",
-  authDomain: "dateplannerwithpookie.firebaseapp.com",
-  projectId: "dateplannerwithpookie",
-  storageBucket: "dateplannerwithpookie.firebasestorage.app",
-  messagingSenderId: "926201285315",
-  appId: "1:926201285315:web:14c30b30cdedb4f07fb076",
-  measurementId: "G-13QJYS5MQL"
-};
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-
-  // tiny helper used by the existing script
-  window._savePlan = async (payload) => {
-    const ref = await addDoc(collection(db, "plans"), { ...payload, createdAt: serverTimestamp() });
-    return ref.id; // return doc id
-  };
-</script>
-
   body{
     margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     color:var(--ink);
@@ -175,6 +151,31 @@ const firebaseConfig = {
     </div>
   </div>
 
+<!-- ✅ Firebase module: OUTSIDE of <style>, BEFORE main script -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBR5oZsBICjKNK190cLPZqUVSbytQuZdcQ",
+    authDomain: "dateplannerwithpookie.firebaseapp.com",
+    projectId: "dateplannerwithpookie",
+    storageBucket: "dateplannerwithpookie.firebasestorage.app",
+    messagingSenderId: "926201285315",
+    appId: "1:926201285315:web:14c30b30cdedb4f07fb076",
+    measurementId: "G-13QJYS5MQL"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // expose for the non-module script below
+  window._savePlan = async (payload) => {
+    const ref = await addDoc(collection(db, "plans"), { ...payload, createdAt: serverTimestamp() });
+    return ref.id;
+  };
+</script>
+
 <script>
   // Surface any JS errors so we can see what's wrong on PC
   window.addEventListener('error', function(e){
@@ -189,9 +190,6 @@ const firebaseConfig = {
   const $ = s => document.querySelector(s); 
   const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
   function rand(a){return a[Math.floor(Math.random()*a.length)]}
-
-  // API base (same origin by default)
-  const API_BASE = '';
 
   // Build activities including cozy home vibes
   const actsList = [
@@ -319,7 +317,7 @@ const firebaseConfig = {
     if(sel.vibe==='adventurous') lines.push('Wildcard: flip a coin at each fork 🪙');
     if(sel.vibe==='cozy') lines.push('Comfort add-on: blanket + playlist 🧸');
     if(sel.vibe==='classy') lines.push('Dress code: a lil extra ✨');
-    return { text: lines.join('\n'), chosen };  /* ✅ fixed newline */
+    return { text: lines.join('\n'), chosen };
   }
 
   function cuteMsg(sel,chosen){
@@ -375,27 +373,27 @@ ${$('#plan').textContent}`;
     }
   });
 
- // SAVE to Firestore
-$('#save').addEventListener('click', async ()=>{
-  const sel=getSel();
-  const {text,chosen}=makePlan(sel);
-  try{
-    const id = await window._savePlan({
-      city:'Sofia',
-      currency:'BGN',
-      selections:sel,
-      itinerary:text,
-      message:cuteMsg(sel,chosen),
-      status:'pending'
-    });
-    const link = `${location.origin}/plan.html?id=${id}`;
-    $('#savedLink').textContent = link;
-    toast('Saved! Link ready ✨');
-  }catch(err){
-    console.error(err);
-    toast('Save failed', true);
-  }
-});
+  // SAVE to Firestore
+  $('#save').addEventListener('click', async ()=>{
+    const sel=getSel(); 
+    const {text,chosen}=makePlan(sel);
+    try{
+      const id = await window._savePlan({
+        city:'Sofia',
+        currency:'BGN',
+        selections:sel,
+        itinerary:text,
+        message:cuteMsg(sel,chosen),
+        status:'pending'
+      });
+      const link = `${location.origin}/plan.html?id=${id}`;
+      $('#savedLink').textContent = link;
+      toast('Saved! Link ready ✨');
+    }catch(err){
+      console.error(err);
+      toast('Save failed', true);
+    }
+  });
 
   $('#copySaved').addEventListener('click', async ()=>{
     try{ 
@@ -447,5 +445,3 @@ $('#save').addEventListener('click', async ()=>{
 </script>
 </body>
 </html>
-
-
