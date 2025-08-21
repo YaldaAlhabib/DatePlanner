@@ -18,6 +18,29 @@
     --radius:16px;
   }
   *{box-sizing:border-box}
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔐 paste your own config from Firebase
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "…",
+    appId: "…"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // tiny helper used by the existing script
+  window._savePlan = async (payload) => {
+    const ref = await addDoc(collection(db, "plans"), { ...payload, createdAt: serverTimestamp() });
+    return ref.id; // return doc id
+  };
+</script>
+
   body{
     margin:0; font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
     color:var(--ink);
@@ -351,24 +374,27 @@ ${$('#plan').textContent}`;
     }
   });
 
-  // SAVE (live mode)
-  $('#save').addEventListener('click', async ()=>{
-    const sel=getSel(); 
-    const {text,chosen}=makePlan(sel);
-    try{
-      const res = await fetch(`${API_BASE}/api/plan`,{
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ city:'Sofia', currency:'BGN', selections:sel, itinerary:text, message:cuteMsg(sel,chosen) })
-      });
-      if(!res.ok) throw new Error('Save failed');
-      const data = await res.json();
-      const link = data.url || (location.origin + '/plan/' + data.id);
-      $('#savedLink').textContent = link; 
-      toast('Saved! Link ready ✨');
-    }catch(err){ 
-      toast('Could not reach API. Host HTML with the API.', true); 
-    }
-  });
+ // SAVE to Firestore
+$('#save').addEventListener('click', async ()=>{
+  const sel=getSel();
+  const {text,chosen}=makePlan(sel);
+  try{
+    const id = await window._savePlan({
+      city:'Sofia',
+      currency:'BGN',
+      selections:sel,
+      itinerary:text,
+      message:cuteMsg(sel,chosen),
+      status:'pending'
+    });
+    const link = `${location.origin}/plan.html?id=${id}`;
+    $('#savedLink').textContent = link;
+    toast('Saved! Link ready ✨');
+  }catch(err){
+    console.error(err);
+    toast('Save failed', true);
+  }
+});
 
   $('#copySaved').addEventListener('click', async ()=>{
     try{ 
@@ -420,3 +446,4 @@ ${$('#plan').textContent}`;
 </script>
 </body>
 </html>
+
