@@ -23,14 +23,15 @@
   import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // 🔐 paste your own config from Firebase
-  const firebaseConfig = {
-    apiKey: "YOUR_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "…",
-    appId: "…"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBR5oZsBICjKNK190cLPZqUVSbytQuZdcQ",
+  authDomain: "dateplannerwithpookie.firebaseapp.com",
+  projectId: "dateplannerwithpookie",
+  storageBucket: "dateplannerwithpookie.firebasestorage.app",
+  messagingSenderId: "926201285315",
+  appId: "1:926201285315:web:14c30b30cdedb4f07fb076",
+  measurementId: "G-13QJYS5MQL"
+};
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -446,4 +447,5 @@ $('#save').addEventListener('click', async ()=>{
 </script>
 </body>
 </html>
+
 
