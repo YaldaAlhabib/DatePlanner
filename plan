@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Date Plan</title>
+<style>
+  :root{ --ink:#2b2b2b; --muted:#777; --accent:#ff85a2; --card:#fff; --bg:#fff0f5; }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);padding:20px}
+  .wrap{max-width:720px;margin:auto}
+  .card{background:var(--card);border:1px solid #f4b6c4;border-radius:16px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+  h1{margin:0 0 10px}
+  .out{white-space:pre-wrap;border:1px solid #f4b6c4;border-radius:12px;padding:12px;background:#fff;margin-top:8px}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  button{background:linear-gradient(135deg,#ff85a2,#ffb3c6);color:#fff;font-weight:800;padding:10px 14px;border:none;border-radius:12px;cursor:pointer}
+  button.ghost{background:#fff;color:#2b2b2b;border:1px solid #f4b6c4}
+  textarea{width:100%;min-height:90px;padding:10px;border:1px solid #f4b6c4;border-radius:12px}
+  .muted{color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>💌 Date plan</h1>
+    <div class="muted" id="sub"></div>
+    <div id="itinerary" class="out">Loading…</div>
+
+    <h3 style="margin-top:16px">Reply</h3>
+    <div class="actions">
+      <button id="yes">I’m in</button>
+      <button class="ghost" id="maybe">Maybe</button>
+      <button class="ghost" id="no">Can’t</button>
+    </div>
+    <div style="margin-top:10px">
+      <label class="muted">Add a note (optional)</label>
+      <textarea id="note" placeholder="Time that works for me is…"></textarea>
+    </div>
+    <div class="actions">
+      <button id="send">Send reply</button>
+    </div>
+    <div class="muted" id="status" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // SAME CONFIG AS index.html
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "…",
+    appId: "…"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+  const $ = s => document.querySelector(s);
+
+  if(!id){ $('#itinerary').textContent = 'Missing plan id.'; throw new Error('no id'); }
+
+  // Load plan
+  const planRef = doc(db, 'plans', id);
+  const snap = await getDoc(planRef);
+  if(!snap.exists()){
+    $('#itinerary').textContent = 'This plan was not found.';
+  } else {
+    const data = snap.data();
+    $('#sub').textContent = `${data.city} • ${data.currency} • ${data.selections?.vibe ?? ''}`;
+    $('#itinerary').textContent = `${data.message}\n\n---\n${data.itinerary}`;
+  }
+
+  // Reply
+  let answer = 'yes';
+  $('#yes').addEventListener('click', ()=>{ answer='yes'; });
+  $('#maybe').addEventListener('click', ()=>{ answer='maybe'; });
+  $('#no').addEventListener('click', ()=>{ answer='no'; });
+
+  $('#send').addEventListener('click', async ()=>{
+    try{
+      const note = $('#note').value.trim();
+      await addDoc(collection(planRef, 'responses'), { answer, note, createdAt: serverTimestamp() });
+      $('#status').textContent = 'Sent! 💫';
+      $('#send').disabled = true;
+    }catch(e){
+      console.error(e);
+      $('#status').textContent = 'Could not send.';
+    }
+  });
+</script>
+</body>
+</html>
